@@ -4,7 +4,7 @@ You will run this problem set from main.py so set things up accordingly
 import os
 from pathlib import Path
 
-from src.extract import extract_weather_data, extract_transit_data
+from src.extract import extract_transit_data, extract_weather_data
 from src.transform_load import transform_and_load_data
 
 
@@ -12,7 +12,9 @@ def main():
     api_key = os.getenv("VISUAL_CROSSING_API_KEY")
 
     if not api_key:
-        raise ValueError("Missing API key. Set VISUAL_CROSSING_API_KEY in your terminal first.")
+        raise ValueError(
+            "Missing API key. Set VISUAL_CROSSING_API_KEY in your terminal first."
+        )
 
     weather_file = Path("data/weather_data.csv")
     transit_file = Path("data/transit_data.csv")
@@ -32,4 +34,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    

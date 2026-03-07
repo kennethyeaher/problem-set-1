@@ -25,22 +25,31 @@ PLOTS_DIR = Path("plots")
 PLOTS_DIR.mkdir(exist_ok=True)
 
 
-def transform_and_load_data():
+def transform_and_load_data() -> pd.DataFrame:
+    
     weather = pd.read_csv(DATA_DIR / "weather_data.csv")
     transit = pd.read_csv(DATA_DIR / "transit_data.csv")
 
     weather.columns = weather.columns.str.strip().str.lower()
     transit.columns = transit.columns.str.strip().str.lower()
 
-    print("Weather columns:", weather.columns.tolist())
-    print("Transit columns:", transit.columns.tolist())
 
-    weather["datetime"] = pd.to_datetime(weather["datetime"])
-    transit["service_date"] = pd.to_datetime(transit["service_date"])
+    weather["datetime"] = pd.to_datetime(weather["datetime"], errors="coerce")
+    transit["service_date"] = pd.to_datetime(transit["service_date"], errors="coerce")
 
     weather = weather[
-        ["weather_id", "datetime", "temp", "tempmax", "tempmin", "precip", "humidity", "windspeed"]
+        [
+            "weather_id",
+            "datetime",
+            "temp",
+            "tempmax",
+            "tempmin",
+            "precip",
+            "humidity",
+            "windspeed",
+        ]
     ]
+
 
     daily_transit = (
         transit.groupby("service_date", as_index=False)["total_rides"]
@@ -48,28 +57,48 @@ def transform_and_load_data():
         .rename(columns={"service_date": "date", "total_rides": "daily_ridership"})
     )
 
+
     merged = pd.merge(
         weather,
         daily_transit,
         left_on="datetime",
         right_on="date",
-        how="inner"
+        how="inner",
     )
 
-    merged.to_csv(DATA_DIR / "merged_weather_transit.csv", index=False)
+    #unique ID to merged output
+    merged.insert(0, "merged_id", range(1, len(merged) + 1))
 
-    plt.figure(figsize=(12, 6))
-    plt.plot(merged["datetime"], merged["daily_ridership"], label="Transit Ridership")
-    plt.plot(merged["datetime"], merged["temp"], label="Average Temperature")
-    plt.xlabel("Date")
-    plt.ylabel("Value")
-    plt.title("Daily Transit Ridership and Average Temperature")
-    plt.legend()
-    plt.xticks(rotation=45)
-    plt.tight_layout()
+    #merged CSV
+    merged_output = DATA_DIR / "merged_weather_transit.csv"
+    merged.to_csv(merged_output, index=False)
+
+    #plot 1
+    fig, ax1 = plt.subplots(figsize=(12, 6))
+
+    ax1.plot(
+        merged["datetime"],
+        merged["daily_ridership"],
+        label="Transit Ridership",
+    )
+    ax1.set_xlabel("Date")
+    ax1.set_ylabel("Daily Transit Ridership")
+
+    ax2 = ax1.twinx()
+    ax2.plot(
+        merged["datetime"],
+        merged["temp"],
+        label="Average Temperature",
+    )
+    ax2.set_ylabel("Average Temperature (°F)")
+
+    fig.suptitle("Daily Transit Ridership and Average Temperature")
+    fig.autofmt_xdate()
+    fig.tight_layout()
     plt.savefig(PLOTS_DIR / "lineplot_ridership_temperature.png")
     plt.close()
 
+    #plot 2
     feb_2025 = merged[
         (merged["datetime"] >= "2025-02-01") &
         (merged["datetime"] <= "2025-02-28")
@@ -84,15 +113,31 @@ def transform_and_load_data():
     plt.savefig(PLOTS_DIR / "scatter_feb2025_ridership_precip.png")
     plt.close()
 
+    
+    #plot 3
+    corr_df = merged.drop(columns=["date"]).select_dtypes(include="number")
+
     plt.figure(figsize=(10, 8))
-    sns.heatmap(merged.select_dtypes(include="number").corr(), annot=True, cmap="coolwarm", fmt=".2f")
+    sns.heatmap(corr_df.corr(), annot=True, cmap="coolwarm", fmt=".2f")
     plt.title("Correlation Heatmap")
     plt.tight_layout()
     plt.savefig(PLOTS_DIR / "correlation_heatmap.png")
     plt.close()
 
-    print("Merged dataset saved to data/merged_weather_transit.csv")
-    print("Plots saved to plots/")
-    print("Interesting trend: ridership tends to be higher on warmer days and may decrease on days with more precipitation.")
+    #summary insights
+    temp_corr = merged["daily_ridership"].corr(merged["temp"])
+    precip_corr = merged["daily_ridership"].corr(merged["precip"])
+
+    print(f"Merged dataset saved to {merged_output}")
+    print(f"Plots saved to {PLOTS_DIR}/")
+    print(
+        f"Ridership has a modest positive correlation with temperature "
+        f"({temp_corr:.2f}) and almost no relationship with precipitation "
+        f"({precip_corr:.2f})."
+    )
+    print(
+        "Overall, ridership appears to increase on warmer days, while "
+        "precipitation does not show a strong daily relationship with ridership."
+    )
 
     return merged
