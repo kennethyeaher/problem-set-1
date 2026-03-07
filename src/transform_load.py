@@ -16,8 +16,11 @@ PART 2: Merge and transform the data
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import pandas as pd
 import seaborn as sns
+
+sns.set_style("whitegrid")
 
 
 DATA_DIR = Path("data")
@@ -82,6 +85,7 @@ def transform_and_load_data() -> pd.DataFrame:
         label="Transit Ridership",
     )
     ax1.set_xlabel("Date")
+    ax1.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:,.0f}'))
     ax1.set_ylabel("Daily Transit Ridership")
 
     ax2 = ax1.twinx()
@@ -105,7 +109,7 @@ def transform_and_load_data() -> pd.DataFrame:
     ]
 
     plt.figure(figsize=(8, 6))
-    plt.scatter(feb_2025["precip"], feb_2025["daily_ridership"])
+    plt.scatter(feb_2025["precip"], feb_2025["daily_ridership"], alpha=0.7, edgecolor="black")
     plt.xlabel("Precipitation")
     plt.ylabel("Daily Transit Ridership")
     plt.title("February 2025: Ridership vs Precipitation")
