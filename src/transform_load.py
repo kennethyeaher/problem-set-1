@@ -115,7 +115,7 @@ def transform_and_load_data() -> pd.DataFrame:
 
     
     #plot 3
-    corr_df = merged.drop(columns=["date"]).select_dtypes(include="number")
+    corr_df = merged.drop(columns=["date","merged_id","weather_id"]).select_dtypes(include="number")
 
     plt.figure(figsize=(10, 8))
     sns.heatmap(corr_df.corr(), annot=True, cmap="coolwarm", fmt=".2f")
