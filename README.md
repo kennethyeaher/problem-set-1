@@ -1,3 +1,24 @@
+# Weather and Transit ETL
+
+A coursework pipeline joining Chicago weather with daily transit ridership to explore how travel patterns vary with weather. It cleans dates, aggregates ridership by day, joins the sources, and exports a merged CSV and exploratory plots.
+
+## My contribution
+
+I implemented the extraction and transformation modules and wired the pipeline through `main.py`, extending the [course starter](https://github.com/gi11ikin/problem-set-1). The original assignment instructions are retained below.
+
+![Correlation heatmap saved by the weather and transit analysis.](plots/correlation_heatmap.png)
+
+This is a committed analysis artifact, not a fresh run. Correlations describe the joined sample and do not establish that weather causes changes in ridership.
+
+## Run and inspect
+
+Create a fresh Python environment, install `requirements.txt`, and run `python main.py` from the repository root. Set `VISUAL_CROSSING_API_KEY` in your environment first; the entry point requires it even when the cached CSV files exist. Downloads can be subject to provider limits. Create your own environment rather than reusing the checked-in `.venv`.
+
+Start with [the transformation code](src/transform_load.py), [saved plots](plots/), or [the merged data](data/merged_weather_transit.csv). The extraction covers October 2024 through October 2025; that is the data period, not the project creation date.
+
+<details>
+<summary>Original course assignment</summary>
+
 PROBLEM SET #1: ETL Weather and Transit Data
 
 Instructions: 
@@ -22,6 +43,17 @@ Submission:
 You will submit the URL for this repo in your GitHub in ELMS.
 
 Grading: 
-We will only run main.py, so make sure that you stucture this correctly and push your final code. We will look at your code, its output, and make sure you've output the correct CSV files. Credit will be given for adhering to the course's Code Standards and Data Standards, using GitHub correctly, and producing the correct output, among other considerations. 
+We will only run main.py, so make sure that you stucture this correctly and push your final code. We will look at your code, its output, and make sure you've output the correct CSV files. Credit will be given for adhering to the course's Code Standards and Data Standards, using GitHub correctly, and producing the correct output, among other considerations.
 
+</details>
 
+---
+
+## Author
+
+**Kenneth Yeaher**  
+Master of Information Management  
+University of Maryland, College Park  
+[![LinkedIn: Kenneth Yeaher](https://img.shields.io/badge/LinkedIn-Kenneth_Yeaher-0A66C2?style=flat)](https://www.linkedin.com/in/kennethyeaher/)
+
+`Python` · `ETL` · `Exploratory Analysis`
