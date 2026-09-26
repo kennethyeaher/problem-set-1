@@ -1,5 +1,10 @@
 # Weather and Transit ETL
 
+![Python](docs/readme/badges/python-3776AB.svg)
+![Matplotlib](docs/readme/badges/matplotlib.svg)
+![pandas](docs/readme/badges/pandas-150458.svg)
+![NumPy](docs/readme/badges/numpy-013243.svg)
+
 A coursework pipeline joining Chicago weather with daily transit ridership to explore how travel patterns vary with weather. It cleans dates, aggregates ridership by day, joins the sources, and exports a merged CSV and exploratory plots.
 
 ## My contribution
@@ -9,6 +14,14 @@ I implemented the extraction and transformation modules and wired the pipeline t
 ![Correlation heatmap saved by the weather and transit analysis.](plots/correlation_heatmap.png)
 
 This is a committed analysis artifact, not a fresh run. Correlations describe the joined sample and do not establish that weather causes changes in ridership.
+
+## Pipeline and outputs
+
+`Weather API + CTA ridership → date cleaning → daily aggregation → join → CSV and charts`
+
+The extraction module assigns identifiers to source rows. The transformation module standardizes dates, sums transit rides by day, and joins them to weather observations. The saved line chart, February precipitation scatter plot, and correlation heatmap answer different exploratory questions; none is a causal estimate.
+
+Review the join and missing dates before interpreting the plots. An inner join retains matching dates, so coverage in the merged dataset can differ from either source.
 
 ## Run and inspect
 
