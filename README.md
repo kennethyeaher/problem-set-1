@@ -25,7 +25,7 @@ Review the join and missing dates before interpreting the plots. An inner join r
 
 ## Run and inspect
 
-Create a fresh Python environment, install `requirements.txt`, and run `python main.py` from the repository root. Set `VISUAL_CROSSING_API_KEY` in your environment first; the entry point requires it even when the cached CSV files exist. Downloads can be subject to provider limits. Create your own environment rather than reusing the checked-in `.venv`.
+From the repository root, create and activate a Python 3.12 environment with `python3.12 -m venv .venv` and `source .venv/bin/activate`, then install dependencies with `python -m pip install -r requirements.txt`. Set `VISUAL_CROSSING_API_KEY` in your environment before running `python main.py`; the entry point requires it even when the cached CSV files exist. Downloads can be subject to provider limits.
 
 Start with [the transformation code](src/transform_load.py), [saved plots](plots/), or [the merged data](data/merged_weather_transit.csv). The extraction covers October 2024 through October 2025; that is the data period, not the project creation date.
 
